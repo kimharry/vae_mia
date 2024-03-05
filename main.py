@@ -8,7 +8,7 @@ import torch.utils.data
 
 from data_loaders.cifar10_data_loader import CIFAR10DataLoader
 from loss import Loss
-from model import VAE
+from vae import VAE
 from trainer import Trainer
 from utils.utils import *
 from utils.weight_initializer import Initializer
@@ -16,6 +16,8 @@ from utils.weight_initializer import Initializer
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
+
+from resnet32 import resnet32
 
 def plot_images(original_images, reconstructed_images, title, filename):
     num_images = original_images.shape[0]
@@ -66,7 +68,12 @@ def main():
     data = CIFAR10DataLoader(args)
     print("Data loaded successfully\n")
 
-    trainer = Trainer(model, loss, data.train_loader, data.test_loader, args)
+    target = resnet32()
+    pretrained_state_dict = torch.load('resnet32_cifar10.pth')
+    target.load_state_dict(pretrained_state_dict['net'])
+    target.to("cuda")
+
+    trainer = Trainer(target, model, loss, data.train_loader, data.test_loader, args)
 
     if args.to_train:
         try:
@@ -86,11 +93,12 @@ def main():
         if args.cuda:
             temp_data = temp_data.cuda()
         temp_data = Variable(temp_data)
-        [outputs, _, _] = model(temp_data)
+        target_output = target(temp_data).view(-1, 10, 1, 1)
+        [outputs, _, _] = model(target_output)
         outputs = outputs.view(-1, 3, 32, 32)
         outputs = outputs.detach().cpu().numpy()
 
-        plot_images(temp_data.detach().cpu().numpy(), [outputs], 'VanillaVAE', 'VanillaVAE')
+        plot_images(temp_data.detach().cpu().numpy(), [outputs], 'VAE', 'VAE')
 
 
 if __name__ == "__main__":

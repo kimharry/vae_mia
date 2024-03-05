@@ -7,9 +7,13 @@ import shutil
 from tqdm import tqdm
 import numpy as np
 
+from resnet32 import resnet32
+
 
 class Trainer:
-    def __init__(self, model, loss, train_loader, test_loader, args):
+    def __init__(self, target, model, loss, train_loader, test_loader, args):
+        self.target = target
+
         self.model = model
         self.args = args
         self.args.start_epoch = 0
@@ -37,7 +41,8 @@ class Trainer:
                     data = data.cuda()
                 data = Variable(data)
                 self.optimizer.zero_grad()
-                recon_batch, mu, logvar = self.model(data)
+                target_output = self.target(data).view(-1, 10, 1, 1)
+                recon_batch, mu, logvar = self.model(target_output)
                 loss = self.loss(recon_batch, data, mu, logvar)
                 loss.backward()
                 self.optimizer.step()
@@ -65,7 +70,8 @@ class Trainer:
             if self.args.cuda:
                 data = data.cuda()
             data = Variable(data, volatile=True)
-            recon_batch, mu, logvar = self.model(data)
+            target_output = self.target(data).view(-1, 10, 1, 1)
+            recon_batch, mu, logvar = self.model(target_output)
             test_loss += self.loss(recon_batch, data, mu, logvar).item()
             # if i == 0:
             #     n = min(data.size(0), 8)
@@ -86,7 +92,8 @@ class Trainer:
             if self.args.cuda:
                 data = data.cuda()
             data = Variable(data, volatile=True)
-            recon_batch, mu, logvar = self.model(data)
+            target_output = self.target(data).view(-1, 10, 1, 1)
+            recon_batch, mu, logvar = self.model(target_output)
             test_loss += self.loss(recon_batch, data, mu, logvar).item()
             # if i % 50 == 0:
             #     n = min(data.size(0), 8)
