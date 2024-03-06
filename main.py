@@ -93,7 +93,7 @@ def main():
         if args.cuda:
             temp_data = temp_data.cuda()
         temp_data = Variable(temp_data)
-        target_output = target(temp_data).view(-1, 10, 1, 1)
+        target_output = target(temp_data)
         [outputs, _, _] = model(target_output)
         outputs = outputs.view(-1, 3, 32, 32)
         outputs = outputs.detach().cpu().numpy()

@@ -41,7 +41,7 @@ class Trainer:
                     data = data.cuda()
                 data = Variable(data)
                 self.optimizer.zero_grad()
-                target_output = self.target(data).view(-1, 10, 1, 1)
+                target_output = self.target(data).view(-1, 64, 8, 8)
                 recon_batch, mu, logvar = self.model(target_output)
                 loss = self.loss(recon_batch, data, mu, logvar)
                 loss.backward()
@@ -70,7 +70,7 @@ class Trainer:
             if self.args.cuda:
                 data = data.cuda()
             data = Variable(data, volatile=True)
-            target_output = self.target(data).view(-1, 10, 1, 1)
+            target_output = self.target(data).view(-1, 64, 8, 8)
             recon_batch, mu, logvar = self.model(target_output)
             test_loss += self.loss(recon_batch, data, mu, logvar).item()
             # if i == 0:
@@ -92,7 +92,7 @@ class Trainer:
             if self.args.cuda:
                 data = data.cuda()
             data = Variable(data, volatile=True)
-            target_output = self.target(data).view(-1, 10, 1, 1)
+            target_output = self.target(data).view(-1, 64, 8, 8)
             recon_batch, mu, logvar = self.model(target_output)
             test_loss += self.loss(recon_batch, data, mu, logvar).item()
             # if i % 50 == 0:

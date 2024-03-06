@@ -94,21 +94,21 @@ class ResNet(nn.Module):
 
 		return nn.Sequential(*layers_list)
 		
+	# def forward(self, x):
+	# 	x = self.conv1(x)
+	# 	x = self.bn1(x)
+	# 	x = self.relu(x)
+
+	# 	x = self.layers_2n(x)
+	# 	x = self.layers_4n(x)
+	# 	x = self.layers_6n(x)
+
+	# 	x = self.avg_pool(x)
+	# 	x = x.view(x.size(0), -1)
+	# 	x = self.fc_out(x)
+	# 	return x
+
 	def forward(self, x):
-		x = self.conv1(x)
-		x = self.bn1(x)
-		x = self.relu(x)
-
-		x = self.layers_2n(x)
-		x = self.layers_4n(x)
-		x = self.layers_6n(x)
-
-		x = self.avg_pool(x)
-		x = x.view(x.size(0), -1)
-		x = self.fc_out(x)
-		return x
-
-	def before_avgpool(self, x):
 		x = self.conv1(x)
 		x = self.bn1(x)
 		x = self.relu(x)
