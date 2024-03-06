@@ -37,7 +37,7 @@ class VAE(nn.Module):
 
         # 64*8*8
         self.conv1 = nn.Conv2d(64, 32, kernel_size=3, stride=1, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(16)
+        self.bn1 = nn.BatchNorm2d(32)
         # 32*8*8
         self.conv2 = nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2 = nn.BatchNorm2d(32)
@@ -74,7 +74,7 @@ class VAE(nn.Module):
         conv1 = self.relu(self.bn1(self.conv1(x)))
         conv2 = self.relu(self.bn2(self.conv2(conv1)))
         conv3 = self.relu(self.bn3(self.conv3(conv2)))
-        conv4 = self.relu(self.bn4(self.conv4(conv3))).view(-1, 8 * 8 * 16)
+        conv4 = self.relu(self.bn4(self.conv4(conv3))).view(-1, 4 * 4 * 16)
 
         fc1 = self.relu(self.fc_bn1(self.fc1(conv4)))
         return self.fc21(fc1), self.fc22(fc1)

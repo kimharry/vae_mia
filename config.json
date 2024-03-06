@@ -22,7 +22,7 @@
 
   "cuda": true,
   "resume": true,
-  "resume_from": "checkpoint.pth.tar",
+  "resume_from": "240306_1.pth.tar",
   "test_every": 20,
   "to_train": true,
   "to_test": true,
