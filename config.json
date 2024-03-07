@@ -6,7 +6,7 @@
 
   "dataset": "CIFAR10",
   "loss": "mse",
-  "input_shape":{
+  "input_shape": {
     "width": 32,
     "hight": 32,
     "channels": 3
@@ -24,8 +24,8 @@
   "resume": true,
   "resume_from": "checkpoint.pth.tar",
   "test_every": 20,
-  "to_train": false,
-  "to_test": false,
+  "to_train": true,
+  "to_test": true,
   "generate_result": true,
 
   "pin_memory": true,
