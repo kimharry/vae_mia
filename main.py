@@ -69,7 +69,7 @@ def main():
     print("Data loaded successfully\n")
 
     target = resnet32()
-    pretrained_state_dict = torch.load('resnet32_cifar10.pth')
+    pretrained_state_dict = torch.load('resnet32_cifar10_total.pth')
     target.load_state_dict(pretrained_state_dict['net'])
     target.to("cuda")
 
@@ -89,7 +89,8 @@ def main():
         print("Testing Finished\n")
 
     if args.generate_result:
-        temp_data, _ = next(iter(data.test_loader))
+        # temp_data, _ = next(iter(data.test_loader))
+        temp_data, _ = next(iter(data.train_loader))
         if args.cuda:
             temp_data = temp_data.cuda()
         temp_data = Variable(temp_data)
