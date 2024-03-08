@@ -17,7 +17,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-from resnet32 import resnet32
+from resnet32 import resnet32_for_mia as resnet32
 
 def plot_images(original_images, reconstructed_images, title, filename):
     num_images = original_images.shape[0]

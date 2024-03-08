@@ -10,7 +10,7 @@ import torchvision.transforms as transforms
 from torchvision.datasets import CIFAR10
 from torch.utils.data import DataLoader
 
-from resnet32 import resnet32
+from resnet32 import resnet32_normal as resnet32
 import argparse
 
 
@@ -75,7 +75,6 @@ def train(epoch, global_steps):
     total = 0
 
     for batch_idx, (inputs, targets) in enumerate(train_loader):
-        step_lr_scheduler.step()
         inputs = inputs.to(device)
         targets = targets.to(device)
         outputs = net(inputs)
@@ -84,6 +83,7 @@ def train(epoch, global_steps):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        step_lr_scheduler.step()
 
         train_loss += loss.item()
         _, predicted = outputs.max(1)
