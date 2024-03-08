@@ -75,7 +75,6 @@ def train(epoch, global_steps):
     total = 0
 
     for batch_idx, (inputs, targets) in enumerate(train_loader):
-        global_steps += 1
         step_lr_scheduler.step()
         inputs = inputs.to(device)
         targets = targets.to(device)
@@ -95,11 +94,7 @@ def train(epoch, global_steps):
     print('train epoch : {} [{}/{}]| loss: {:.3f} | acc: {:.3f}'.format(
         epoch, batch_idx, len(train_loader), train_loss/(batch_idx+1), acc))
 
-    return global_steps
-
-
-# def test(epoch, best_acc, global_steps):
-def test(epoch, global_steps):
+def test(epoch):
     net.eval()
 
     test_loss = 0
@@ -122,18 +117,6 @@ def test(epoch, global_steps):
     print('test epoch : {} [{}/{}]| loss: {:.3f} | acc: {:.3f}'.format(
             epoch, batch_idx, len(test_loader), test_loss/(batch_idx+1), acc))
 
-    # if acc > best_acc:
-        # print('==> Saving model..')
-        # state = {
-        #     'net': net.state_dict(),
-        #     'acc': acc,
-        #     'epoch': epoch,
-        # }
-        # if not os.path.isdir('save_model'):
-        #     os.mkdir('save_model')
-        # torch.save(state, './save_model/ckpt.pth')
-        # best_acc = acc
-
     return acc, test_loss/(batch_idx+1)
 
 
@@ -147,40 +130,15 @@ if __name__=='__main__':
         test(epoch=0, best_acc=0)
     else:
         for epoch in range(1, num_epochs+1):
-            global_steps = train(epoch, global_steps)
-            # acc = test(epoch, global_steps)
-            acc, loss = test(epoch, global_steps)
+            train(epoch, global_steps)
+            acc, loss = test(epoch)
             if acc > best_acc:
                 best_acc = acc
-            #     # print('==> Saving model..')
-            #     state = {
-            #         'net': net.state_dict(),
-            #         'acc': best_acc,
-            #         'epoch': epoch,
-            #     }
-            #     if not os.path.isdir('save_model'):
-            #         os.mkdir('save_model')
-            #     torch.save(state, './save_model/ckpt_240113_4.pth')
-            # if loss < best_loss:
-            #     best_loss = loss
-
-            # del latest_accs[0]
-            # latest_accs.append(acc)
-            # if best_acc == latest_accs[0]:
-            # del latest_losses[0]
-            # latest_losses.append(loss)
-            # if best_loss == latest_losses[0]:
-            # 	early_stopping = True
-            
-            # if global_steps >= 64000:
-            if epoch >= 85:
                 state = {
                     'net': net.state_dict(),
                     'acc': best_acc,
                     'epoch': epoch,
                 }
-                if not os.path.isdir('save_model'):
-                    os.mkdir('save_model')
-                torch.save(state, './save_model/ckpt_240114_7.pth')
-                print("training finished!")
-                break
+                torch.save(state, 'test.pth')
+
+        print("training finished!")
