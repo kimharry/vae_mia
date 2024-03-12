@@ -69,7 +69,8 @@ def main():
     print("Data loaded successfully\n")
 
     target = resnet32()
-    pretrained_state_dict = torch.load('resnet32_cifar10_total.pth')
+    # pretrained_state_dict = torch.load('resnet32_cifar10_total.pth')
+    pretrained_state_dict = torch.load('resnet32_cifar10_total2.pth')
     target.load_state_dict(pretrained_state_dict['net'])
     target.to("cuda")
 

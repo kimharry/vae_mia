@@ -17,11 +17,11 @@ import argparse
 parser = argparse.ArgumentParser(description='cifar10 classification models')
 parser.add_argument('--lr', default=0.1, help='')
 parser.add_argument('--resume', default=None, help='')
-parser.add_argument('--batch_size', default=128, help='')
+parser.add_argument('--batch_size', default=32, help='')
 parser.add_argument('--batch_size_test', default=100, help='')
 parser.add_argument('--num_worker', default=4, help='')
 parser.add_argument('--logdir', type=str, default='logs', help='')
-parser.add_argument('--num_epochs', default=500, help='')
+parser.add_argument('--num_epochs', default=200, help='')
 args = parser.parse_args()
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -63,7 +63,7 @@ if args.resume is not None:
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
 
-decay_epoch = [50, 100, 150, 200, 250, 300]
+decay_epoch = [40, 70, 100, 120, 150]
 step_lr_scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=decay_epoch, gamma=0.1)
 
 
@@ -139,6 +139,6 @@ if __name__=='__main__':
                     'acc': best_acc,
                     'epoch': epoch,
                 }
-                torch.save(state, 'test2.pth')
+                torch.save(state, 'test4.pth')
 
         print("training finished!")

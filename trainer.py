@@ -7,7 +7,7 @@ import shutil
 from tqdm import tqdm
 import numpy as np
 
-from resnet32 import resnet32
+from resnet32 import resnet32_for_mia as resnet32
 
 
 class Trainer:
