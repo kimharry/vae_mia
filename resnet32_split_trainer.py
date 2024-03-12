@@ -63,11 +63,11 @@ if args.resume is not None:
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
 
-decay_epoch = [50, 100, 150]
+decay_epoch = [50, 100, 150, 200, 250, 300]
 step_lr_scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=decay_epoch, gamma=0.1)
 
 
-def train(epoch, global_steps):
+def train(epoch):
     net.train()
 
     train_loss = 0
@@ -83,7 +83,6 @@ def train(epoch, global_steps):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        step_lr_scheduler.step()
 
         train_loss += loss.item()
         _, predicted = outputs.max(1)
@@ -93,6 +92,8 @@ def train(epoch, global_steps):
     acc = 100 * correct / total
     print('train epoch : {} [{}/{}]| loss: {:.3f} | acc: {:.3f}'.format(
         epoch, batch_idx, len(train_loader), train_loss/(batch_idx+1), acc))
+    
+    step_lr_scheduler.step()
 
 def test(epoch):
     net.eval()
@@ -124,13 +125,12 @@ if __name__=='__main__':
     best_acc = 0
     acc = 0
     num_epochs = args.num_epochs
-    global_steps = 0
 
     if args.resume is not None:
         test(epoch=0, best_acc=0)
     else:
         for epoch in range(1, num_epochs+1):
-            train(epoch, global_steps)
+            train(epoch)
             acc, loss = test(epoch)
             if acc > best_acc:
                 best_acc = acc
@@ -139,6 +139,6 @@ if __name__=='__main__':
                     'acc': best_acc,
                     'epoch': epoch,
                 }
-                torch.save(state, 'test.pth')
+                torch.save(state, 'test2.pth')
 
         print("training finished!")
