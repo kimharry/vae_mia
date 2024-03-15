@@ -1,0 +1,48 @@
+==> Preparing data..
+Files already downloaded and verified
+Files already downloaded and verified
+==> Making model..
+train epoch : 1 [4165/4166]| loss: 2.129 | acc: 19.815
+test epoch : 1 [99/100]| loss: 1.922 | acc: 26.100
+train epoch : 2 [4165/4166]| loss: 1.957 | acc: 26.422
+test epoch : 2 [99/100]| loss: 1.809 | acc: 31.460
+train epoch : 3 [4165/4166]| loss: 1.862 | acc: 30.323
+test epoch : 3 [99/100]| loss: 1.705 | acc: 36.000
+train epoch : 4 [4165/4166]| loss: 1.790 | acc: 33.701
+test epoch : 4 [99/100]| loss: 1.636 | acc: 39.230
+train epoch : 5 [4165/4166]| loss: 1.721 | acc: 36.840
+test epoch : 5 [99/100]| loss: 1.574 | acc: 41.890
+train epoch : 6 [4165/4166]| loss: 1.657 | acc: 39.816
+test epoch : 6 [99/100]| loss: 1.541 | acc: 43.160
+train epoch : 7 [4165/4166]| loss: 1.598 | acc: 41.989
+test epoch : 7 [99/100]| loss: 1.499 | acc: 45.140
+train epoch : 8 [4165/4166]| loss: 1.540 | acc: 44.299
+test epoch : 8 [99/100]| loss: 1.487 | acc: 45.650
+train epoch : 9 [4165/4166]| loss: 1.481 | acc: 46.519
+test epoch : 9 [99/100]| loss: 1.482 | acc: 46.870
+train epoch : 10 [4165/4166]| loss: 1.425 | acc: 48.812
+test epoch : 10 [99/100]| loss: 1.468 | acc: 48.030
+train epoch : 11 [4165/4166]| loss: 1.333 | acc: 52.802
+test epoch : 11 [99/100]| loss: 1.425 | acc: 49.630
+train epoch : 12 [4165/4166]| loss: 1.308 | acc: 54.135
+test epoch : 12 [99/100]| loss: 1.428 | acc: 49.540
+train epoch : 13 [4165/4166]| loss: 1.292 | acc: 54.897
+test epoch : 13 [99/100]| loss: 1.432 | acc: 49.700
+train epoch : 14 [4165/4166]| loss: 1.278 | acc: 55.323
+test epoch : 14 [99/100]| loss: 1.434 | acc: 49.790
+train epoch : 15 [4165/4166]| loss: 1.264 | acc: 55.857
+test epoch : 15 [99/100]| loss: 1.438 | acc: 49.770
+train epoch : 16 [4165/4166]| loss: 1.251 | acc: 56.451
+test epoch : 16 [99/100]| loss: 1.442 | acc: 49.740
+train epoch : 17 [4165/4166]| loss: 1.238 | acc: 57.093
+test epoch : 17 [99/100]| loss: 1.447 | acc: 49.780
+train epoch : 18 [4165/4166]| loss: 1.226 | acc: 57.579
+test epoch : 18 [99/100]| loss: 1.453 | acc: 49.730
+train epoch : 19 [4165/4166]| loss: 1.213 | acc: 58.179
+test epoch : 19 [99/100]| loss: 1.458 | acc: 49.830
+train epoch : 20 [4165/4166]| loss: 1.200 | acc: 58.641
+test epoch : 20 [99/100]| loss: 1.464 | acc: 49.870
+train epoch : 21 [4165/4166]| loss: 1.197 | acc: 58.449
+test epoch : 21 [99/100]| loss: 1.469 | acc: 50.040
+train epoch : 22 [4165/4166]| loss: 1.192 | acc: 58.809
+test epoch : 22 [99/100]| loss: 1.471 | acc: 49.990
