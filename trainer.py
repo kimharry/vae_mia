@@ -6,13 +6,14 @@ from tensorboardX import SummaryWriter
 import shutil
 from tqdm import tqdm
 import numpy as np
+from random import choice
 
 from resnet32 import resnet32_for_mia as resnet32
 
 
 class Trainer:
-    def __init__(self, target, model, loss, train_loader, test_loader, args):
-        self.target = target
+    def __init__(self, targets, model, loss, train_loader, test_loader, args):
+        self.targets = targets
 
         self.model = model
         self.args = args
@@ -41,7 +42,8 @@ class Trainer:
                     data = data.cuda()
                 data = Variable(data)
                 self.optimizer.zero_grad()
-                target_output = self.target(data).view(-1, 64, 8, 8)
+                temp_target = choice(self.targets)
+                target_output = temp_target(data).view(-1, 64, 8, 8)
                 recon_batch, mu, logvar = self.model(target_output)
                 loss = self.loss(recon_batch, data, mu, logvar)
                 loss.backward()
@@ -70,7 +72,8 @@ class Trainer:
             if self.args.cuda:
                 data = data.cuda()
             data = Variable(data, volatile=True)
-            target_output = self.target(data).view(-1, 64, 8, 8)
+            temp_target = choice(self.targets)
+            target_output = temp_target(data).view(-1, 64, 8, 8)
             recon_batch, mu, logvar = self.model(target_output)
             test_loss += self.loss(recon_batch, data, mu, logvar).item()
             # if i == 0:
@@ -92,7 +95,8 @@ class Trainer:
             if self.args.cuda:
                 data = data.cuda()
             data = Variable(data, volatile=True)
-            target_output = self.target(data).view(-1, 64, 8, 8)
+            temp_target = choice(self.targets)
+            target_output = temp_target(data).view(-1, 64, 8, 8)
             recon_batch, mu, logvar = self.model(target_output)
             test_loss += self.loss(recon_batch, data, mu, logvar).item()
             # if i % 50 == 0:

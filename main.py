@@ -16,6 +16,7 @@ from utils.weight_initializer import Initializer
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
+from random import choice
 
 from resnet32 import resnet32_for_mia as resnet32
 
@@ -48,8 +49,7 @@ def main():
     args = parse_args()
 
     # Create the experiment directories
-    args.summary_dir, args.checkpoint_dir = create_experiment_dirs(
-        args.experiment_dir)
+    args.summary_dir, args.checkpoint_dir = create_experiment_dirs(args.experiment_dir)
 
     model = VAE()
 
@@ -68,33 +68,63 @@ def main():
     data = CIFAR10DataLoader(args)
     print("Data loaded successfully\n")
 
-    target = resnet32()
-    pretrained_state_dict = torch.load('pretrained_models/resnet32_cifar10_total.pth')
-    target.load_state_dict(pretrained_state_dict['net'])
-    target.to("cuda")
+    target_total = resnet32()
+    target_total.load_state_dict(torch.load('pretrained_models/resnet32_cifar10_total.pth')['net'])
+    target_total.to("cuda")
+    trainer_total = Trainer([target_total], model, loss, data.train_loader, data.test_loader, args)
 
-    trainer = Trainer(target, model, loss, data.train_loader, data.test_loader, args)
+    targets_split = [resnet32()] * args.num_split_models
+    for n in range(args.num_split_models):
+        targets_split[n].load_state_dict(torch.load(f'pretrained_models/resnet32_cifar10_split_{n}.pth')['net'])
+        targets_split[n].to("cuda")
+    trainer_split = Trainer(targets_split, model, loss, data.train_loader, data.test_loader, args)
 
-    if args.to_train:
+    if args.to_train_total:
         try:
             print("Training...")
-            trainer.train()
+            trainer_total.train()
             print("Training Finished\n")
         except KeyboardInterrupt:
             print("Training had been Interrupted\n")
 
-    if args.to_test:
+    if args.to_test_total:
         print("Testing on training data...")
-        trainer.test_on_trainings_set()
+        trainer_total.test_on_trainings_set()
         print("Testing Finished\n")
 
-    if args.generate_result:
+    if args.generate_result_total:
         # temp_data, _ = next(iter(data.test_loader))
         temp_data, _ = next(iter(data.train_loader))
         if args.cuda:
             temp_data = temp_data.cuda()
         temp_data = Variable(temp_data)
-        target_output = target(temp_data)
+        target_output = target_total(temp_data)
+        [outputs, _, _] = model(target_output)
+        outputs = outputs.view(-1, 3, 32, 32)
+        outputs = outputs.detach().cpu().numpy()
+
+        plot_images(temp_data.detach().cpu().numpy(), [outputs], 'VAE', 'VAE')
+
+    if args.to_train_split:
+        try:
+            print("Training...")
+            trainer_split.train()
+            print("Training Finished\n")
+        except KeyboardInterrupt:
+            print("Training had been Interrupted\n")
+
+    if args.to_test_split:
+        print("Testing on training data...")
+        trainer_split.test_on_trainings_set()
+        print("Testing Finished\n")
+
+    if args.generate_result_split:
+        # temp_data, _ = next(iter(data.test_loader))
+        temp_data, _ = next(iter(data.train_loader))
+        if args.cuda:
+            temp_data = temp_data.cuda()
+        temp_data = Variable(temp_data)
+        target_output = choice(targets_split)(temp_data)
         [outputs, _, _] = model(target_output)
         outputs = outputs.view(-1, 3, 32, 32)
         outputs = outputs.detach().cpu().numpy()

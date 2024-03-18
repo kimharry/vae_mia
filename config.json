@@ -24,9 +24,14 @@
   "resume": true,
   "resume_from": "checkpoint.pth.tar",
   "test_every": 20,
-  "to_train": true,
-  "to_test": true,
-  "generate_result": true,
+  "to_train_total": false,
+  "to_test_total": false,
+  "generate_result_total": false,
+
+  "num_split_models": 3,
+  "to_train_split": true,
+  "to_test_split": true,
+  "generate_result_split": true,
 
   "pin_memory": true,
   "async_loading": true

@@ -150,7 +150,7 @@ if __name__=='__main__':
                     'acc': best_acc,
                     'epoch': epoch,
                 }
-                torch.save(state, 'pretrained_models/resenet32_cifar10_split_'+str(net_num)+'.pth')
+                torch.save(state, 'pretrained_models/resnet32_cifar10_split_'+str(net_num)+'.pth')
 
         print(net_num+1, "training finished!")
 
