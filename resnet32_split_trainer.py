@@ -125,11 +125,14 @@ if __name__=='__main__':
     decay_epoch = [5, 10, 20]
     step_lr_schedulers = [lr_scheduler.MultiStepLR(optimizer, milestones=decay_epoch, gamma=0.1) for optimizer in optimizers]
 
-    best_acc = 0
-    acc = 0
     num_epochs = args.num_epochs
 
     for net_num in range(args.num_models):
+        best_loss = 0
+        loss = 0
+        best_acc = 0
+        acc = 0
+
         net = net_list[net_num]
         optimizer = optimizers[net_num]
         step_lr_scheduler = step_lr_schedulers[net_num]
@@ -140,6 +143,8 @@ if __name__=='__main__':
             acc, loss = test(net, epoch)
             if acc > best_acc:
                 best_acc = acc
+            if loss < best_loss:
+                best_loss = loss
                 state = {
                     'net': net.state_dict(),
                     'acc': best_acc,
@@ -152,4 +157,4 @@ if __name__=='__main__':
     # random model test
     shuffle(net_list)
     acc, loss = test(net_list[0], 0)
-    print("Random model accuracy: ", acc)
+    print("Random model accuracy:", acc, "loss:", loss)
