@@ -18,12 +18,12 @@ from random import shuffle
 
 
 parser = argparse.ArgumentParser(description='cifar10 classification models')
-parser.add_argument('--lr', default=1e-3, help='')
+parser.add_argument('--lr', default=0.1, help='')
 parser.add_argument('--batch_size', default=16, help='')
 parser.add_argument('--batch_size_test', default=100, help='')
 parser.add_argument('--num_worker', default=4, help='')
 parser.add_argument('--logdir', type=str, default='logs', help='')
-parser.add_argument('--num_epochs', default=70, help='')
+parser.add_argument('--num_epochs', default=50, help='')
 parser.add_argument('--num_models', default=3, help='')
 
 def train(net, optimizer, step_lr_scheduler, train_loader, epoch):
@@ -115,28 +115,19 @@ if __name__=='__main__':
 
     print('==> Making model..')
 
-    net_list = [resnet32().to(device)] * args.num_models
 
     criterion = nn.CrossEntropyLoss()
-    optimizers = [optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4) for net in net_list]
-    # optimizers = [optim.Adam(net.parameters(), lr=args.lr, betas=(0.9, 0.999), eps=1e-08, weight_decay=0, amsgrad=False) for net in net_list]
-
-    # decay_epoch = [40, 70, 100, 120, 150]
     decay_epoch = [5, 10, 20]
-    step_lr_schedulers = [lr_scheduler.MultiStepLR(optimizer, milestones=decay_epoch, gamma=0.1) for optimizer in optimizers]
-
     num_epochs = args.num_epochs
 
     for net_num in range(args.num_models):
-        best_loss = 0
-        loss = 0
-        best_acc = 0
-        acc = 0
-
-        net = net_list[net_num]
-        optimizer = optimizers[net_num]
-        step_lr_scheduler = step_lr_schedulers[net_num]
+        net = resnet32().to(device)
+        optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=1e-4)
+        step_lr_scheduler = lr_scheduler.MultiStepLR(optimizer, milestones=decay_epoch, gamma=0.1)
         train_loader = train_loaders[net_num]
+
+        best_loss = 1000000
+        best_acc = -1
 
         for epoch in range(1, num_epochs+1):
             train(net, optimizer, step_lr_scheduler, train_loader, epoch)

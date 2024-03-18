@@ -1,7 +1,7 @@
 {
   "experiment_dir": "VAE_CIFAR10_mse_loss_ld_512",
 
-  "num_epochs": 500,
+  "num_epochs": 100,
   "seed": 1,
 
   "dataset": "CIFAR10",
@@ -22,7 +22,7 @@
 
   "cuda": true,
   "resume": true,
-  "resume_from": "checkpoint.pth.tar",
+  "resume_from": "240318_1.pth.tar",
   "test_every": 20,
   "to_train_total": false,
   "to_test_total": false,
