@@ -23,7 +23,7 @@ parser.add_argument('--batch_size', default=16, help='')
 parser.add_argument('--batch_size_test', default=100, help='')
 parser.add_argument('--num_worker', default=4, help='')
 parser.add_argument('--logdir', type=str, default='logs', help='')
-parser.add_argument('--num_epochs', default=50, help='')
+parser.add_argument('--num_epochs', default=70, help='')
 parser.add_argument('--num_models', default=3, help='')
 
 def train(net, optimizer, step_lr_scheduler, train_loader, epoch):
@@ -105,13 +105,19 @@ if __name__=='__main__':
 
     dataset_train = torchvision.datasets.CIFAR10(root='./data', train=True, download=True, transform=transforms_train)
 
-    subsets = list(range(args.num_models))
-    subset_size = len(dataset_train) // args.num_models
-    
+    indices = list(range(args.num_models))
+    DATA_SIZE_PER_CLASS = 5000
+    subset_size = DATA_SIZE_PER_CLASS // args.num_models
+
     for i in range(10):
         temp_idx = np.where(np.array(dataset_train.targets) == i)[0]
+        if i == 0:
+            for j in range(args.num_models):
+                indices[j] = temp_idx[j*subset_size:(j+1)*subset_size]
         for j in range(args.num_models):
-            subsets[j] = np.concatenate((subsets[j], temp_idx[j*subset_size:(j+1)*subset_size]))
+            indices[j] = np.concatenate((indices[j], temp_idx[j*subset_size:(j+1)*subset_size]))
+
+    subsets = [Subset(dataset_train, indice) for indice in indices]
     
     train_loaders = [DataLoader(subset, batch_size=args.batch_size, shuffle=True, pin_memory=True, drop_last=True) for subset in subsets]
 
@@ -119,7 +125,7 @@ if __name__=='__main__':
 
 
     criterion = nn.CrossEntropyLoss()
-    decay_epoch = [5, 10, 20]
+    decay_epoch = [20, 40, 50]
     num_epochs = args.num_epochs
 
     for net_num in range(args.num_models):
