@@ -124,12 +124,13 @@ def main():
         if args.cuda:
             temp_data = temp_data.cuda()
         temp_data = Variable(temp_data)
-        target_output = choice(targets_split)(temp_data)
-        [outputs, _, _] = model(target_output)
-        outputs = outputs.view(-1, 3, 32, 32)
-        outputs = outputs.detach().cpu().numpy()
+        for i in range(args.num_split_models):
+            target_output = targets_split[i](temp_data)
+            [outputs, _, _] = model(target_output)
+            outputs = outputs.view(-1, 3, 32, 32)
+            outputs = outputs.detach().cpu().numpy()
 
-        plot_images(temp_data.detach().cpu().numpy(), [outputs], 'VAE', 'VAE')
+            plot_images(temp_data.detach().cpu().numpy(), [outputs], 'VAE'+str(i), 'VAE'+str(i))
 
 
 if __name__ == "__main__":

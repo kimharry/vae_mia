@@ -1,7 +1,7 @@
 {
   "experiment_dir": "VAE_CIFAR10_mse_loss_ld_512",
 
-  "num_epochs": 100,
+  "num_epochs": 300,
   "seed": 1,
 
   "dataset": "CIFAR10",
@@ -17,20 +17,20 @@
 
   "batch_size": 64,
   "weight_decay": 5e-4,
-  "learning_rate": 1e-3,
+  "learning_rate": 1e-2,
   "learning_rate_decay": 0.99,
 
   "cuda": true,
   "resume": true,
-  "resume_from": "240318_1.pth.tar",
-  "test_every": 20,
+  "resume_from": "240321_1.pth.tar",
+  "test_every": 5,
   "to_train_total": false,
   "to_test_total": false,
   "generate_result_total": false,
 
   "num_split_models": 3,
-  "to_train_split": true,
-  "to_test_split": true,
+  "to_train_split": false,
+  "to_test_split": false,
   "generate_result_split": true,
 
   "pin_memory": true,
