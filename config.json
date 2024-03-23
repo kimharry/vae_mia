@@ -25,7 +25,7 @@
 
   "cuda": true,
   "resume": true,
-  "resume_from": "240322_1.pth.tar",
+  "resume_from": "240323_1",
   "test_every": 5,
   "to_train_total": false,
   "to_test_total": false,
