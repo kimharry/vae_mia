@@ -115,9 +115,11 @@ class Trainer:
 
     def adjust_learning_rate(self, epoch):
         """Sets the learning rate to the initial LR multiplied by 0.98 every epoch"""
-        learning_rate = self.args.learning_rate * (self.args.learning_rate_decay ** epoch)
-        for param_group in self.optimizer.param_groups:
-            param_group['lr'] = learning_rate
+        # learning_rate = self.args.learning_rate * (self.args.learning_rate_decay ** epoch)
+        if epoch in self.args.learning_rate_decay_epochs:
+            learning_rate = self.args.learning_rate * (self.args.gamma ** (self.args.learning_rate_decay_epochs.index(epoch) + 1))
+            for param_group in self.optimizer.param_groups:
+                param_group['lr'] = learning_rate
         return learning_rate
 
     def save_checkpoint(self, state, is_best=False, filename='checkpoint.pth.tar'):

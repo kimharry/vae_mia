@@ -51,15 +51,17 @@ def main():
     # Create the experiment directories
     args.summary_dir, args.checkpoint_dir = create_experiment_dirs(args.experiment_dir)
 
-    model = VAE()
+    model_total = VAE()
+    model_split = VAE()
 
     # to apply xavier_uniform:
-    Initializer.initialize(model=model, initialization=init.xavier_uniform, gain=init.calculate_gain('relu'))
+    Initializer.initialize(model=model_total, initialization=init.xavier_uniform, gain=init.calculate_gain('relu'))
 
     loss = Loss()
 
     if torch.cuda.is_available():
-        model.cuda()
+        model_total.cuda()
+        model_split = VAE()
         loss.cuda()
         cudnn.enabled = True
         cudnn.benchmark = True
@@ -71,13 +73,13 @@ def main():
     target_total = resnet32()
     target_total.load_state_dict(torch.load('pretrained_models/resnet32_cifar10_total.pth')['net'])
     target_total.to("cuda")
-    trainer_total = Trainer([target_total], model, loss, data.train_loader, data.test_loader, args)
+    trainer_total = Trainer([target_total], model_total, loss, data.train_loader, data.test_loader, args)
 
     targets_split = [resnet32()] * args.num_split_models
     for n in range(args.num_split_models):
         targets_split[n].load_state_dict(torch.load(f'pretrained_models/resnet32_cifar10_split_{n}.pth')['net'])
         targets_split[n].to("cuda")
-    trainer_split = Trainer(targets_split, model, loss, data.train_loader, data.test_loader, args)
+    trainer_split = Trainer(targets_split, model_split, loss, data.train_loader, data.test_loader, args)
 
     if args.to_train_total:
         try:
@@ -92,19 +94,6 @@ def main():
         trainer_total.test_on_trainings_set()
         print("Testing Finished\n")
 
-    if args.generate_result_total:
-        # temp_data, _ = next(iter(data.test_loader))
-        temp_data, _ = next(iter(data.train_loader))
-        if args.cuda:
-            temp_data = temp_data.cuda()
-        temp_data = Variable(temp_data)
-        target_output = target_total(temp_data)
-        [outputs, _, _] = model(target_output)
-        outputs = outputs.view(-1, 3, 32, 32)
-        outputs = outputs.detach().cpu().numpy()
-
-        plot_images(temp_data.detach().cpu().numpy(), [outputs], 'VAE', 'VAE')
-
     if args.to_train_split:
         try:
             print("Training...")
@@ -117,6 +106,20 @@ def main():
         print("Testing on training data...")
         trainer_split.test_on_trainings_set()
         print("Testing Finished\n")
+        
+
+    if args.generate_result_total:
+        # temp_data, _ = next(iter(data.test_loader))
+        temp_data, _ = next(iter(data.train_loader))
+        if args.cuda:
+            temp_data = temp_data.cuda()
+        temp_data = Variable(temp_data)
+        target_output = target_total(temp_data)
+        [outputs, _, _] = model_total(target_output)
+        outputs = outputs.view(-1, 3, 32, 32)
+        outputs = outputs.detach().cpu().numpy()
+
+        plot_images(temp_data.detach().cpu().numpy(), [outputs], 'VAE', 'VAE')
 
     if args.generate_result_split:
         # temp_data, _ = next(iter(data.test_loader))
@@ -126,7 +129,7 @@ def main():
         temp_data = Variable(temp_data)
         for i in range(args.num_split_models):
             target_output = targets_split[i](temp_data)
-            [outputs, _, _] = model(target_output)
+            [outputs, _, _] = model_split(target_output)
             outputs = outputs.view(-1, 3, 32, 32)
             outputs = outputs.detach().cpu().numpy()
 
