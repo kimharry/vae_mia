@@ -27,7 +27,7 @@ class Trainer:
 
         # Model Loading
         if args.resume:
-            if len(args.targets) == 1:
+            if len(self.targets) == 1:
                 self.load_checkpoint(self.args.resume_from + "_total.pth.tar")
             else:
                 self.load_checkpoint(self.args.resume_from + "_split.pth.tar")
@@ -53,11 +53,14 @@ class Trainer:
 
             epoch_loss = np.mean(loss_list)
             print("epoch {}: - loss: {}".format(epoch, epoch_loss))
-            new_lr = self.adjust_learning_rate(epoch)
+            if epoch in self.args.learning_rate_decay_epochs:
+                new_lr = self.adjust_learning_rate(epoch)
+            else:
+                new_lr = self.optimizer.param_groups[0]['lr']
             print('learning rate:', new_lr)
 
             if epoch_loss < best_loss:
-                if len(args.targets) == 1:
+                if len(self.targets) == 1:
                     state = {
                         'epoch': epoch + 1,
                         'state_dict': self.model.state_dict(),
@@ -117,10 +120,9 @@ class Trainer:
     def adjust_learning_rate(self, epoch):
         """Sets the learning rate to the initial LR multiplied by 0.98 every epoch"""
         # learning_rate = self.args.learning_rate * (self.args.learning_rate_decay ** epoch)
-        if epoch in self.args.learning_rate_decay_epochs:
-            learning_rate = self.args.learning_rate * (self.args.gamma ** (self.args.learning_rate_decay_epochs.index(epoch) + 1))
-            for param_group in self.optimizer.param_groups:
-                param_group['lr'] = learning_rate
+        learning_rate = self.args.learning_rate * (self.args.gamma ** (self.args.learning_rate_decay_epochs.index(epoch) + 1))
+        for param_group in self.optimizer.param_groups:
+            param_group['lr'] = learning_rate
         return learning_rate
 
     def load_checkpoint(self, filename):

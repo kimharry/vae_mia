@@ -61,7 +61,7 @@ def main():
 
     if torch.cuda.is_available():
         model_total.cuda()
-        model_split = VAE()
+        model_split.cuda()
         loss.cuda()
         cudnn.enabled = True
         cudnn.benchmark = True
