@@ -77,7 +77,7 @@ def main():
 
     targets_split = [resnet32()] * args.num_split_models
     for n in range(args.num_split_models):
-        targets_split[n].load_state_dict(torch.load(f'pretrained_models/resnet32_cifar10_split_{n}.pth')['net'])
+        targets_split[n].load_state_dict(torch.load(f'pretrained_models/{args.num_split_models}-models/resnet32_cifar10_split_{n}.pth')['net'])
         targets_split[n].to("cuda")
     trainer_split = Trainer(targets_split, model_split, loss, data.train_loader, data.test_loader, args)
 
