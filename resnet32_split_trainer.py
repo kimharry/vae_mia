@@ -23,8 +23,8 @@ parser.add_argument('--batch_size', default=16, help='')
 parser.add_argument('--batch_size_test', default=100, help='')
 parser.add_argument('--num_worker', default=4, help='')
 parser.add_argument('--logdir', type=str, default='logs', help='')
-parser.add_argument('--num_epochs', default=70, help='')
-parser.add_argument('--num_models', default=3, help='')
+parser.add_argument('--num_epochs', default=50, help='')
+parser.add_argument('--num_models', default=5, help='')
 
 def train(net, optimizer, step_lr_scheduler, train_loader, epoch):
     net.train()
